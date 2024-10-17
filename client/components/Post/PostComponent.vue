@@ -32,12 +32,12 @@ const deletePost = async () => {
   emit("refreshPosts");
 };
 
-function handleCommentAdded(newComment) {
+function handleCommentAdded(newComment: Record<string, string>) {
   console.log("adding comment", newComment);
   comments.value.push(newComment);
 }
 
-function handleCommentDeleted(commentId) {
+function handleCommentDeleted(commentId: string) {
   comments.value = comments.value.filter((comment) => comment._id !== commentId); // Remove the deleted comment
 }
 
