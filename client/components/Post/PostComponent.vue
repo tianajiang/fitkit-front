@@ -10,7 +10,7 @@ import CreateCommentForm from "./CreateCommentForm.vue";
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
-const comments = ref([]);
+const comments = ref<Array<Record<string, string>>>([]);
 
 async function getComments(targetId?: string) {
   let commentResults;
