@@ -32,9 +32,8 @@ const deletePost = async () => {
   emit("refreshPosts");
 };
 
-function handleCommentAdded(newComment: Record<string, string>) {
-  // console.log("adding comment", newComment);
-  comments.value.push(newComment);
+async function handleCommentAdded() {
+  await getComments(props.post._id); // Refresh the comments
 }
 
 function handleCommentDeleted(commentId: string) {

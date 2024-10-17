@@ -29,9 +29,7 @@ const deleteComment = async () => {
           <button class="button-error btn-small pure-button" @click="deleteComment">Delete</button>
         </li>
       </menu>
-      <article class="timestamp">
-        <p>Posted on: {{ formatDate(props.comment.dateCreated) }}</p>
-      </article>
+      <div class="timestamp">Posted on: {{ formatDate(props.comment.dateCreated) }}</div>
     </div>
   </div>
 </template>
@@ -62,16 +60,30 @@ menu {
   margin: 0;
 }
 
-.comment-actions {
+/* .comment-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .timestamp {
+  display: flex;
+  justify-content: flex-end;
   font-size: 0.65em;
   font-style: italic;
-  text-align: right;
+} */
+
+.comment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
+
+.timestamp {
+  font-size: 0.65em;
+  font-style: italic;
+  margin-left: auto;
 }
 
 .timestamp p {
