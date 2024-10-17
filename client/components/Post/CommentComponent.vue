@@ -37,7 +37,7 @@ const deleteComment = async () => {
 <style scoped>
 .comment-container {
   border-top: 1px solid #ddd;
-  padding: 0.1em 0;
+  padding: 0.5em 1em;
 }
 
 .author {
@@ -77,7 +77,6 @@ menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1em;
 }
 
 .timestamp {
