@@ -33,7 +33,7 @@ const deletePost = async () => {
 };
 
 function handleCommentAdded(newComment: Record<string, string>) {
-  console.log("adding comment", newComment);
+  // console.log("adding comment", newComment);
   comments.value.push(newComment);
 }
 
