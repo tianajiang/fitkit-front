@@ -3,10 +3,25 @@ import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
+import CommentComponent from "./CommentComponent.vue";
+import { ref, onMounted } from "vue";
+import CreateCommentForm from "./CreateCommentForm.vue";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
+const comments = ref([]);
+
+async function getComments(targetId?: string) {
+  let commentResults;
+  let query: Record<string, string> = targetId ? { targetId } : {};
+  try {
+    commentResults = await fetchy(`/api/comments/`, "GET", { query });
+  } catch {
+    return;
+  }
+  comments.value = commentResults;
+}
 
 const deletePost = async () => {
   try {
@@ -16,6 +31,19 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+function handleCommentAdded(newComment) {
+  console.log("adding comment", newComment);
+  comments.value.push(newComment);
+}
+
+function handleCommentDeleted(commentId) {
+  comments.value = comments.value.filter((comment) => comment._id !== commentId); // Remove the deleted comment
+}
+
+onMounted(async () => {
+  await getComments(props.post._id);
+});
 </script>
 
 <template>
@@ -31,6 +59,10 @@ const deletePost = async () => {
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </article>
   </div>
+  <div class="comments">
+    <CommentComponent v-for="comment in comments" :key="comment._id" :comment="comment" @commentDeleted="handleCommentDeleted" />
+  </div>
+  <CreateCommentForm :post="props.post" @commentAdded="handleCommentAdded" />
 </template>
 
 <style scoped>

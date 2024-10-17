@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Posting, Sessioning } from "./app";
+import { Authing, Collectioning, Commenting, CommunityGoaling, Communitying, Friending, Posting, Sessioning, UserGoaling } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -84,9 +84,13 @@ class Routes {
   }
 
   @Router.post("/posts")
-  async createPost(session: SessionDoc, content: string, options?: PostOptions) {
+  async createPost(session: SessionDoc, content: string, communityId: string, options?: PostOptions) {
     const user = Sessioning.getUser(session);
+    // await Communitying.assertUserIsMember(new ObjectId(communityId), user);
     const created = await Posting.create(user, content, options);
+    // if (created.post) {
+    //   await Communitying.addPost(new ObjectId(communityId), created.post._id);
+    // }
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
 
@@ -103,6 +107,11 @@ class Routes {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
     await Posting.assertAuthorIsUser(oid, user);
+    //remove post from its community
+    const community = await Communitying.getCommunityByPost(oid);
+    if (community) {
+      await Communitying.removePost(community._id, oid);
+    }
     return Posting.delete(oid);
   }
 
@@ -151,6 +160,264 @@ class Routes {
     const user = Sessioning.getUser(session);
     const fromOid = (await Authing.getUserByUsername(from))._id;
     return await Friending.rejectRequest(fromOid, user);
+  }
+
+  @Router.get("/comments")
+  @Router.validate(z.object({ targetId: z.string().optional() }))
+  async getComments(targetId?: string) {
+    let comments;
+    if (targetId) {
+      const id = new ObjectId(targetId);
+      comments = await Commenting.getByTarget(id);
+    } else {
+      comments = await Commenting.getComments();
+    }
+    return Responses.comments(comments);
+  }
+
+  @Router.post("/comments")
+  async createComment(session: SessionDoc, content: string, targetId: string) {
+    const user = Sessioning.getUser(session);
+    await Posting.assertPostExists(new ObjectId(targetId));
+    const created = await Commenting.create(user, content, new ObjectId(targetId));
+    return { msg: created.msg, comment: await Responses.comment(created.comment) };
+  }
+
+  @Router.patch("/comments/:id")
+  async updateComment(session: SessionDoc, id: string, content?: string) {
+    const user = Sessioning.getUser(session);
+    const oid = new ObjectId(id);
+    await Commenting.assertAuthorIsUser(oid, user);
+    return await Commenting.update(oid, content);
+  }
+
+  @Router.delete("/comments/:id")
+  async deleteComment(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    const oid = new ObjectId(id);
+    await Commenting.assertAuthorIsUser(oid, user);
+    return Commenting.delete(oid);
+  }
+
+  @Router.get("/communities")
+  @Router.validate(z.object({ name: z.string().optional() }))
+  async getCommunities(name?: string) {
+    if (name) {
+      return await Responses.communities(await Communitying.getByName(name));
+    }
+    return await Responses.communities(await Communitying.getCommunities());
+  }
+
+  @Router.post("/communities")
+  async createCommunity(session: SessionDoc, name: string, description: string) {
+    const user = Sessioning.getUser(session);
+    const created = await Communitying.create(name, description, user);
+    return { msg: created.msg, community: await Responses.community(created.community) };
+  }
+
+  @Router.get("/communities/user/:id")
+  async getCommunitiesByUser(userId: string) {
+    const communities = await Communitying.getCommunitiesByUser(new ObjectId(userId));
+    return Responses.communities(communities);
+  }
+
+  @Router.get("/communities/search")
+  @Router.validate(z.object({ keyword: z.string() }))
+  async searchCommunitiesByKeyword(keyword: string) {
+    return await Responses.communities(await Communitying.searchCommunitiesByKeyword(keyword));
+  }
+
+  @Router.put("/communities/join/:id")
+  async joinCommunity(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    await Communitying.assertUserIsNotMember(new ObjectId(id), user);
+    return await Communitying.join(new ObjectId(id), user);
+  }
+
+  @Router.put("/communities/leave/:id")
+  async leaveCommunity(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    await Communitying.assertUserIsMember(new ObjectId(id), user);
+    return await Communitying.leave(new ObjectId(id), user);
+  }
+
+  @Router.post("/goals/community")
+  async createCommunityGoal(session: SessionDoc, communityId: string, name: string, unit: string, amount: string, deadline: string) {
+    const user = Sessioning.getUser(session);
+    const amt = parseInt(amount);
+    if (Number.isNaN(amt)) {
+      throw new Error("Amount must be a number!");
+    }
+    const ddln = new Date(deadline);
+    await Communitying.assertUserIsMember(new ObjectId(communityId), user);
+    return await CommunityGoaling.create(new ObjectId(communityId), name, unit, amt, ddln);
+  }
+
+  @Router.post("/goals/user")
+  async createUserGoal(session: SessionDoc, name: string, unit: string, amount: string, deadline: string) {
+    const user = Sessioning.getUser(session);
+    const amt = parseInt(amount);
+    if (Number.isNaN(amt)) {
+      throw new Error("Amount must be a number!");
+    }
+    const ddln = new Date(deadline);
+    return await UserGoaling.create(user, name, unit, amt, ddln);
+  }
+
+  @Router.patch("/goals/community/:id")
+  async updateCommunityGoal(session: SessionDoc, id: string, name?: string, unit?: string, amount?: string, deadline?: string) {
+    const user = Sessioning.getUser(session);
+    const goal = await CommunityGoaling.getGoal(new ObjectId(id));
+    const community = await Communitying.getCommunity(goal.author);
+    await Communitying.assertUserIsMember(community._id, user);
+    const amt = amount ? parseInt(amount) : undefined;
+    const ddln = deadline ? new Date(deadline) : undefined;
+    return await CommunityGoaling.update(new ObjectId(id), name, unit, amt, ddln);
+  }
+
+  @Router.patch("/goals/user/:id")
+  async updateUserGoal(session: SessionDoc, id: string, name?: string, unit?: string, amount?: string, deadline?: string) {
+    const user = Sessioning.getUser(session);
+    await UserGoaling.assertUserIsGoalAuthor(new ObjectId(id), user);
+    const amt = amount ? parseInt(amount) : undefined;
+    const ddln = deadline ? new Date(deadline) : undefined;
+    return await UserGoaling.update(new ObjectId(id), name, unit, amt, ddln);
+  }
+
+  @Router.delete("/goals/community/:id")
+  async deleteCommunityGoal(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    const goal = await CommunityGoaling.getGoal(new ObjectId(id));
+    const community = await Communitying.getCommunity(goal.author);
+    await Communitying.assertUserIsMember(community._id, user);
+    return await CommunityGoaling.deleteIncompleteGoal(new ObjectId(id));
+  }
+
+  @Router.delete("/goals/user/:id")
+  async deleteUserGoal(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    await UserGoaling.assertUserIsGoalAuthor(new ObjectId(id), user);
+    return await UserGoaling.deleteIncompleteGoal(new ObjectId(id));
+  }
+
+  @Router.patch("/goals/community/:id/progress")
+  async addCommunityGoalProgress(session: SessionDoc, id: string, progress: string) {
+    const user = Sessioning.getUser(session);
+    const goal = await CommunityGoaling.getGoal(new ObjectId(id));
+    const community = await Communitying.getCommunity(goal.author);
+    await Communitying.assertUserIsMember(community._id, user);
+    const prog = parseInt(progress);
+    if (Number.isNaN(prog)) {
+      throw new Error("Amount must be a number!");
+    }
+    return await CommunityGoaling.addProgress(new ObjectId(id), prog);
+  }
+
+  @Router.patch("/goals/user/:id/progress/")
+  async addUserGoalProgress(session: SessionDoc, id: string, progress: string) {
+    const user = Sessioning.getUser(session);
+    await UserGoaling.assertUserIsGoalAuthor(new ObjectId(id), user);
+    const prog = parseInt(progress);
+    if (Number.isNaN(prog)) {
+      throw new Error("Amount must be a number!");
+    }
+    return await UserGoaling.addProgress(new ObjectId(id), prog);
+  }
+
+  @Router.get("/goals/complete/community")
+  @Router.validate(z.object({ communityId: z.string().optional() }))
+  async getCompleteCommunityGoals(communityId?: string) {
+    if (communityId) {
+      const community = await Communitying.getCommunity(new ObjectId(communityId));
+      if (!community) {
+        throw new Error("Community not found!");
+      }
+      return await CommunityGoaling.getCompleteByAuthor(new ObjectId(communityId));
+    }
+    return await CommunityGoaling.getCompleteGoals();
+  }
+
+  @Router.get("/goals/incomplete/community")
+  @Router.validate(z.object({ communityId: z.string().optional() }))
+  async getIncompleteCommunityGoals(communityId?: string) {
+    if (communityId) {
+      const community = await Communitying.getCommunity(new ObjectId(communityId));
+      if (!community) {
+        throw new Error("Community not found!");
+      }
+      return await CommunityGoaling.getIncompleteByAuthor(new ObjectId(communityId));
+    }
+    return await CommunityGoaling.getIncompleteGoals();
+  }
+
+  @Router.get("/goals/complete/user")
+  @Router.validate(z.object({ authorId: z.string().optional() }))
+  async getCompleteUserGoals(authorId?: string) {
+    if (authorId) {
+      await Authing.assertUserExists(new ObjectId(authorId));
+      return await UserGoaling.getCompleteByAuthor(new ObjectId(authorId));
+    }
+    return await UserGoaling.getCompleteGoals();
+  }
+
+  @Router.get("/goals/incomplete/user")
+  @Router.validate(z.object({ authorId: z.string().optional() }))
+  async getIncompleteUserGoals(authorId?: string) {
+    if (authorId) {
+      await Authing.assertUserExists(new ObjectId(authorId));
+      return await UserGoaling.getIncompleteByAuthor(new ObjectId(authorId));
+    }
+    return await UserGoaling.getIncompleteGoals();
+  }
+
+  @Router.post("/collections")
+  async createUserCollection(session: SessionDoc, name: string) {
+    const user = Sessioning.getUser(session);
+    return await Collectioning.create(name, user);
+  }
+
+  @Router.post("/collections/globalLibrary")
+  async createGlobalLibraryCollection() {
+    return await Collectioning.create("Global Exercise Library", null);
+  }
+
+  @Router.get("/collections")
+  @Router.validate(z.object({ ownerId: z.string().optional() }))
+  async getCollections(ownerId?: string) {
+    let collections;
+    if (ownerId) {
+      collections = await Collectioning.getCollectionsByUser(new ObjectId(ownerId));
+    } else {
+      collections = await Collectioning.getCollections();
+    }
+    return collections;
+  }
+
+  @Router.get("/collections/user/:id/post/:postId")
+  async getCollectionsByPostAndUser(ownerId: string, postId: string) {
+    const collections = await Collectioning.getCollectionsByPostAndUser(new ObjectId(ownerId), new ObjectId(postId));
+    return collections;
+  }
+
+  @Router.patch("/collections/addPost/:id")
+  async addPostToCollection(session: SessionDoc, id: string, postId: string) {
+    const user = Sessioning.getUser(session);
+    await Collectioning.assertUserCanEditCollection(new ObjectId(id), user);
+    return await Collectioning.addPost(new ObjectId(id), new ObjectId(postId));
+  }
+
+  @Router.patch("/collections/removePost/:id")
+  async removePostFromCollection(session: SessionDoc, id: string, postId: string) {
+    const user = Sessioning.getUser(session);
+    await Collectioning.assertUserCanEditCollection(new ObjectId(id), user);
+    return await Collectioning.removePost(new ObjectId(id), new ObjectId(postId));
+  }
+
+  @Router.delete("/collections/:id")
+  async deleteCollection(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    await Collectioning.assertUserCanDeleteCollection(new ObjectId(id), user);
+    return await Collectioning.deleteCollection(new ObjectId(id));
   }
 }
 
