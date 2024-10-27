@@ -469,7 +469,6 @@ class Routes {
 
   @Router.get("/collections/:id/posts")
   async getPostsInCollection(id: string) {
-    console.log("id", id);
     return await Collectioning.getPostsInCollection(new ObjectId(id));
   }
 

@@ -7,7 +7,6 @@ const route = useRoute();
 const goalId = route.params.id as string;
 const router = useRouter();
 
-// State variables to store goal data
 const goal = ref({
   name: "",
   unit: "",
@@ -17,7 +16,6 @@ const goal = ref({
   targetCompletionDate: "",
 });
 
-// Load goal details when the component mounts
 const loadGoalDetails = async () => {
   try {
     const response = await fetchy(`/api/goals/user/${goalId}`, "GET");
@@ -33,7 +31,6 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString("en-US");
 };
 
-// Calculate the progress percentage
 const progressPercentage = () => {
   return Math.min((goal.value.progress / goal.value.amount) * 100, 100);
 };
@@ -45,7 +42,7 @@ const deleteGoal = async () => {
     console.error("Failed to delete goal:", error);
     alert("Failed to delete goal. Please try again.");
   }
-  await router.push("/goals"); // Navigate back to "My Goals" page
+  await router.push("/goals"); 
 };
 
 const editGoal = async () => {

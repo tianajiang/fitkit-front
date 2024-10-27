@@ -15,7 +15,6 @@ const loadPosts = async () => {
 
   try {
     let postResults = await fetchy(`/api/collections/${collectionId}/posts`, "GET");
-    console.log("Post results:", postResults);
     const promises = postResults.map((id: string) => fetchy(`/api/posts/${id}`, "GET"));
     postResults = await Promise.all(promises);
     posts.value = postResults;

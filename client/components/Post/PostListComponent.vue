@@ -23,14 +23,12 @@ async function getPosts() {
   if (!communityId) {
     try {
       postResults = await fetchy("/api/posts", "GET");
-      console.log("post res aklflkdsjf", postResults);
       posts.value = postResults;
     } catch (_) {
       return;
     }
   } else {
     try {
-      console.log("post res aklflkdsdfsdfdsfsjf", postResults);
       postResults = await fetchy(`/api/communities/posts/${communityId}`, "GET");
       //get all of the post objects given the array of post ids
       const promises = postResults.map((id: string) => fetchy(`/api/posts/${id}`, "GET"));

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const content = ref("");
@@ -60,7 +60,7 @@ const emptyForm = () => {
   addToLibrary.value = false;
 };
 
-onMounted(loadCommunities);
+onBeforeMount(loadCommunities);
 </script>
 
 <template>

@@ -32,7 +32,6 @@ const searchPosts = async () => {
     if (searchKeyword.value) {
       const keyword = searchKeyword.value;
       const searchResults = await fetchy(`/api/GlobalExerciseLibrary/search/${encodeURIComponent(keyword)}`, "GET");
-      console.log("Search results:", searchResults);
       await reloadAllPosts(searchResults);
     } else {
       await loadAllPosts(); // Reset to all posts if search is cleared

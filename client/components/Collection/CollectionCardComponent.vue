@@ -2,7 +2,6 @@
 import { defineProps } from "vue";
 import { useRouter } from "vue-router";
 
-// Props to receive the collection data.
 const props = defineProps({
   collection: {
     type: Object,
@@ -12,9 +11,7 @@ const props = defineProps({
 
 const router = useRouter();
 
-// Triggers the event to navigate to the collection details page.
 async function handleClick() {
-  // Navigate to the collection's detail page (update the route as necessary)
   await router.push(`/collections/${props.collection._id}`);
 }
 </script>
@@ -29,8 +26,8 @@ async function handleClick() {
 .collection-card {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center vertically */
-  align-items: center; /* Center horizontally */
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   width: 300px;
   height: 100px;
@@ -38,7 +35,7 @@ async function handleClick() {
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s;
-  text-align: center; /* Center text within the card */
+  text-align: center;
 }
 
 .collection-card:hover {

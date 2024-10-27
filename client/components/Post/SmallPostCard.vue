@@ -7,7 +7,6 @@ const router = useRouter();
 
 // Navigate to the single post page on click
 const navigateToPost = async () => {
-  console.log("Navigating to post:", props.post._id);
   await router.push(`/posts/${props.post._id}`);
 };
 </script>
