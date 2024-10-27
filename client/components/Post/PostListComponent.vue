@@ -1,30 +1,45 @@
 <script setup lang="ts">
-import CreatePostForm from "@/components/Post/CreatePostForm.vue";
+import CreateNewPostForm from "@/components/Post/CreateNewPostForm.vue";
 import EditPostForm from "@/components/Post/EditPostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import SearchPostForm from "./SearchPostForm.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 
-const loaded = ref(false);
-let posts = ref<Array<Record<string, string>>>([]);
-let editing = ref("");
-let searchAuthor = ref("");
+const props = defineProps<{
+  communityId?: string;
+}>();
 
-async function getPosts(author?: string) {
-  let query: Record<string, string> = author !== undefined ? { author } : {};
+const loaded = ref(false);
+const posts = ref<Array<Record<string, string>>>([]);
+let editing = ref("");
+
+async function getPosts() {
+  const communityId = props.communityId;
   let postResults;
-  try {
-    postResults = await fetchy("/api/posts", "GET", { query });
-  } catch (_) {
-    return;
+  if (!communityId) {
+    try {
+      postResults = await fetchy("/api/posts", "GET");
+      posts.value = postResults;
+    } catch (_) {
+      return;
+    }
+  } else {
+    try {
+      console.log("Fetching posts for community", communityId);
+      postResults = await fetchy(`/api/communities/posts/${communityId}`, "GET");
+      //get all of the post objects given the array of post ids
+      const promises = postResults.map((id: string) => fetchy(`/api/posts/${id}`, "GET"));
+      postResults = await Promise.all(promises);
+      posts.value = postResults;
+      console.log("Posts for community", communityId, postResults);
+    } catch (_) {
+      return;
+    }
   }
-  searchAuthor.value = author ? author : "";
-  posts.value = postResults;
 }
 
 function updateEditing(id: string) {
@@ -40,20 +55,15 @@ onBeforeMount(async () => {
 <template>
   <section v-if="isLoggedIn">
     <h2>Create a post:</h2>
-    <CreatePostForm @refreshPosts="getPosts" />
+    <CreateNewPostForm @refreshPosts="getPosts" :community-id="communityId" />
   </section>
-  <div class="row">
-    <h2 v-if="!searchAuthor">Posts:</h2>
-    <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getPosts" />
-  </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
     </article>
   </section>
-  <p v-else-if="loaded">No posts found</p>
+  <p v-else-if="loaded">No posts yet!</p>
   <p v-else>Loading...</p>
 </template>
 

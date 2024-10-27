@@ -11,6 +11,7 @@ export interface GoalDoc extends BaseDoc {
   progress: number;
   creationDate: Date;
   targetCompletionDate: Date;
+  oldId?: ObjectId;
 }
 
 /**
@@ -59,12 +60,8 @@ export default class GoalingConcept {
   }
 
   async getGoal(_id: ObjectId) {
-    const goal = await this.incompleteGoals.readOne({ _id });
-    if (!goal) {
-      throw new NotFoundError(`Goal ${_id} does not exist!`);
-    }
     const incomplete = await this.incompleteGoals.readOne({ _id });
-    const complete = await this.completeGoals.readOne({ _id });
+    const complete = await this.completeGoals.readOne({ oldId: _id });
     if (incomplete) {
       return incomplete;
     } else if (complete) {
@@ -72,7 +69,7 @@ export default class GoalingConcept {
     } else {
       throw new NotFoundError(`Goal ${_id} does not exist!`);
     }
-}
+  }
 
   async update(_id: ObjectId, name?: string, unit?: string, amount?: number, targetCompletionDate?: Date) {
     const goal = await this.incompleteGoals.readOne({ _id });
@@ -129,10 +126,13 @@ export default class GoalingConcept {
     if (!goal) {
       throw new NotFoundError(`Goal ${_id} does not exist!`);
     }
-    const { progress, ...goalWithoutProgress } = goal;
     await this.incompleteGoals.deleteOne({ _id });
     // Add the goal to the completeGoals collection without the progress field
-    await this.completeGoals.createOne(goalWithoutProgress);
+    //change the targetCompletionDate to the date the goal was completed
+    goal.targetCompletionDate = new Date();
+    goal.progress = goal.amount;
+    //make the new goal have the same id as the old one
+    await this.completeGoals.createOne({ ...goal, oldId: _id });
     return { msg: "Goal completed successfully!" };
   }
 
@@ -166,5 +166,3 @@ export class UserNotGoalAuthorError extends NotAllowedError {
     super("{0} is not the author of goal {1}!", author, _id);
   }
 }
-
-

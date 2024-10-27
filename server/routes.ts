@@ -32,6 +32,11 @@ class Routes {
     return await Authing.getUserByUsername(username);
   }
 
+  @Router.get("/users/:id")
+  async getUserById(id: string) {
+    return await Authing.getUserById(new ObjectId(id));
+  }
+
   @Router.post("/users")
   async createUser(session: SessionDoc, username: string, password: string) {
     Sessioning.isLoggedOut(session);
@@ -83,13 +88,21 @@ class Routes {
     return Responses.posts(posts);
   }
 
+  @Router.get("/posts/:id")
+  async getPost(id: string) {
+    return await Responses.post(await Posting.getPost(new ObjectId(id)));
+  }
+
   @Router.post("/posts")
-  async createPost(session: SessionDoc, content: string, communityId: string, options?: PostOptions) {
+  async createPost(session: SessionDoc, content: string, communityId: string, addToLibrary: boolean, options?: PostOptions) {
     const user = Sessioning.getUser(session);
-    // await Communitying.assertUserIsMember(new ObjectId(communityId), user);
+    await Communitying.assertUserIsMember(new ObjectId(communityId), user);
     const created = await Posting.create(user, content, options);
-    // if (created.post) {
-    //   await Communitying.addPost(new ObjectId(communityId), created.post._id);
+    if (created.post) {
+      await Communitying.addPost(new ObjectId(communityId), created.post._id);
+    }
+    // if (addToLibrary) {
+    //   await Collectioning.addPostToGlobalLibrary(created.post._id);
     // }
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
@@ -208,6 +221,27 @@ class Routes {
     return await Responses.communities(await Communitying.getCommunities());
   }
 
+  @Router.get("/communities/posts/:id")
+  async getCommunityPosts(id: string) {
+    return await Communitying.getCommunityPosts(new ObjectId(id));
+  }
+
+  @Router.get("/communities/:id")
+  async getCommunity(id: string) {
+    return await Responses.community(await Communitying.getCommunity(new ObjectId(id)));
+  }
+
+  @Router.get("/communities/:id/isMember")
+  async isCommunityMember(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    try {
+      await Communitying.assertUserIsMember(new ObjectId(id), user);
+      return { isMember: true };
+    } catch {
+      return { isMember: false };
+    }
+  }
+
   @Router.post("/communities")
   async createCommunity(session: SessionDoc, name: string, description: string) {
     const user = Sessioning.getUser(session);
@@ -216,14 +250,16 @@ class Routes {
   }
 
   @Router.get("/communities/user/:id")
-  async getCommunitiesByUser(userId: string) {
-    const communities = await Communitying.getCommunitiesByUser(new ObjectId(userId));
+  async getCommunitiesByUser(id: string) {
+    const communities = await Communitying.getCommunitiesByUser(new ObjectId(id));
+    console.log("GETTING DATA IN ROUTES", communities, id);
     return Responses.communities(communities);
   }
 
-  @Router.get("/communities/search")
+  @Router.get("/communities/search/:keyword")
   @Router.validate(z.object({ keyword: z.string() }))
   async searchCommunitiesByKeyword(keyword: string) {
+    console.log("sdkjlaldflksdjflkdjflkdjfdskfj ", keyword);
     return await Responses.communities(await Communitying.searchCommunitiesByKeyword(keyword));
   }
 
@@ -261,6 +297,7 @@ class Routes {
       throw new Error("Amount must be a number!");
     }
     const ddln = new Date(deadline);
+    console.log("creating user goal", user, name, unit, amt, ddln, deadline);
     return await UserGoaling.create(user, name, unit, amt, ddln);
   }
 
@@ -313,7 +350,7 @@ class Routes {
     return await CommunityGoaling.addProgress(new ObjectId(id), prog);
   }
 
-  @Router.patch("/goals/user/:id/progress/")
+  @Router.patch("/goals/user/:id/progress")
   async addUserGoalProgress(session: SessionDoc, id: string, progress: string) {
     const user = Sessioning.getUser(session);
     await UserGoaling.assertUserIsGoalAuthor(new ObjectId(id), user);
@@ -322,6 +359,16 @@ class Routes {
       throw new Error("Amount must be a number!");
     }
     return await UserGoaling.addProgress(new ObjectId(id), prog);
+  }
+
+  @Router.get("/goals/user/:id")
+  async getUserGoal(id: string) {
+    return await UserGoaling.getGoal(new ObjectId(id));
+  }
+
+  @Router.get("/goals/community/:id")
+  async getCommunityGoal(id: string) {
+    return await CommunityGoaling.getGoal(new ObjectId(id));
   }
 
   @Router.get("/goals/complete/community")
@@ -353,6 +400,7 @@ class Routes {
   @Router.get("/goals/complete/user")
   @Router.validate(z.object({ authorId: z.string().optional() }))
   async getCompleteUserGoals(authorId?: string) {
+    console.log("getting complete user goals", authorId);
     if (authorId) {
       await Authing.assertUserExists(new ObjectId(authorId));
       return await UserGoaling.getCompleteByAuthor(new ObjectId(authorId));
@@ -363,6 +411,7 @@ class Routes {
   @Router.get("/goals/incomplete/user")
   @Router.validate(z.object({ authorId: z.string().optional() }))
   async getIncompleteUserGoals(authorId?: string) {
+    console.log("getting incomplete user goals");
     if (authorId) {
       await Authing.assertUserExists(new ObjectId(authorId));
       return await UserGoaling.getIncompleteByAuthor(new ObjectId(authorId));
@@ -381,12 +430,12 @@ class Routes {
     return await Collectioning.create("Global Exercise Library", null);
   }
 
-  @Router.get("/collections")
-  @Router.validate(z.object({ ownerId: z.string().optional() }))
-  async getCollections(ownerId?: string) {
+  @Router.get("/collections/user/:id")
+  async getCollections(id: string) {
     let collections;
-    if (ownerId) {
-      collections = await Collectioning.getCollectionsByUser(new ObjectId(ownerId));
+    console.log("getting collections", id);
+    if (id) {
+      collections = await Collectioning.getCollectionsByUser(new ObjectId(id));
     } else {
       collections = await Collectioning.getCollections();
     }
@@ -402,6 +451,7 @@ class Routes {
   @Router.patch("/collections/addPost/:id")
   async addPostToCollection(session: SessionDoc, id: string, postId: string) {
     const user = Sessioning.getUser(session);
+    await Posting.assertPostExists(new ObjectId(postId));
     await Collectioning.assertUserCanEditCollection(new ObjectId(id), user);
     return await Collectioning.addPost(new ObjectId(id), new ObjectId(postId));
   }

@@ -22,7 +22,7 @@ export default class CollectioningConcept {
     this.collections = new DocCollection<CollectionDoc>(collectionName);
   }
 
-  async create(name: string, owner: ObjectId|null) {
+  async create(name: string, owner: ObjectId | null) {
     if (!name) {
       throw new NotAllowedError("Collection name cannot be empty!");
     }
@@ -53,7 +53,7 @@ export default class CollectioningConcept {
     //check if post already in collection
     for (const p of collection.posts) {
       if (p.toString() === post.toString()) {
-        throw new NotAllowedError(`Post ${post} is already in collection ${_id}!`);
+        return;
       }
     }
     collection.posts.push(post);
@@ -107,4 +107,3 @@ export class UserNotCollectionOwnerError extends NotAllowedError {
     super("{0} is not allowed to edit collection {1}!", author, _id);
   }
 }
-

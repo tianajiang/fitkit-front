@@ -2,14 +2,15 @@
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import SaveButtonComponent from "../Collection/SaveButtonComponent.vue";
 import CommentComponent from "./CommentComponent.vue";
-import { ref, onMounted } from "vue";
 import CreateCommentForm from "./CreateCommentForm.vue";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { currentUsername, userId } = storeToRefs(useUserStore());
 const comments = ref<Array<Record<string, string>>>([]);
 
 async function getComments(targetId?: string) {
@@ -46,7 +47,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
+  <div class="header">
+    <p class="author">{{ props.post.author }}</p>
+    <SaveButtonComponent :postId="props.post._id" :userId="userId" />
+  </div>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
@@ -88,6 +92,12 @@ menu {
   justify-content: flex-end;
   font-size: 0.9em;
   font-style: italic;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* Space out the author and save button */
+  align-items: center;
 }
 
 .base {

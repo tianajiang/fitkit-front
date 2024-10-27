@@ -57,6 +57,16 @@ export default class CommunityingConcept {
     return await this.communities.readOne({ posts: post });
   }
 
+  async getCommunityPosts(_id: ObjectId) {
+    const community = await this.communities.readOne({ _id });
+    if (!community) {
+      throw new NotFoundError(`Community ${_id} does not exist!`);
+    }
+    const ret = community.posts;
+    ret.reverse();
+    return ret;
+  }
+
   // return all communities where name or description contains given keyword
   async searchCommunitiesByKeyword(keyword: string) {
     const nameCommunities = await this.communities.readMany({ name: { $regex: keyword, $options: "i" } });
