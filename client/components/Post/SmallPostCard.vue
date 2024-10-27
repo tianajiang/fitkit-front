@@ -27,11 +27,11 @@ const navigateToPost = async () => {
   padding: 1em;
   margin-bottom: 1em;
   cursor: pointer; /* Change cursor to pointer to indicate clickable item */
-  transition: background-color 0.2s; /* Smooth transition for hover effect */
+  transition: transform 0.2s;
 }
 
 .post:hover {
-  background-color: var(--hover-bg); /* Optional hover effect */
+  transform: scale(1.05);
 }
 
 p {
