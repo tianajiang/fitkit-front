@@ -146,7 +146,7 @@ const router = createRouter({
     {
       path: "/collections/new",
       name: "NewCollection",
-      component: () => import("../views/CreateCollectionView.vue"),
+      component: () => import("@/views/CreateCollectionView.vue"),
       meta: { requiresAuth: true },
     },
     {
