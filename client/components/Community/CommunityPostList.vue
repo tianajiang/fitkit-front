@@ -29,6 +29,7 @@ const loadCommunity = async () => {
     if (isMember.value) {
       await Promise.all([loadPosts(data.posts), loadMembers(data.members), loadGoals()]);
     }
+    console.log("Community loaded:", data);
   } catch (err) {
     console.error("Failed to load community:", err);
     alert("Could not load the community. Redirecting...");
@@ -53,8 +54,9 @@ const loadPosts = async (postIds: string[]) => {
 
 // Load member details by their IDs
 const loadMembers = async (memberIds: string[]) => {
+  console.log("Loading members:", memberIds);
   try {
-    const promises = memberIds.map((id) => fetchy(`/api/users/${id}`, "GET"));
+    const promises = memberIds.map((id) => fetchy(`/api/users/username/${id}`, "GET"));
     members.value = await Promise.all(promises);
   } catch (err) {
     console.error("Failed to load members:", err);

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { fetchy } from "@/utils/fetchy";
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const goalId = route.params.id as string;
@@ -42,7 +42,7 @@ const deleteGoal = async () => {
     console.error("Failed to delete goal:", error);
     alert("Failed to delete goal. Please try again.");
   }
-  await router.push("/goals"); 
+  await router.push("/goals");
 };
 
 const editGoal = async () => {
