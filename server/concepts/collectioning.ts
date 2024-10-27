@@ -40,6 +40,14 @@ export default class CollectioningConcept {
     return await this.collections.readMany({ owner: user });
   }
 
+  async getPostsInCollection(_id: ObjectId) {
+    const collection = await this.collections.readOne({ _id });
+    if (!collection) {
+      throw new NotFoundError(`Collection ${_id} does not exist!`);
+    }
+    return collection.posts;
+  }
+
   async getCollectionsByPostAndUser(user: ObjectId, post: ObjectId) {
     // Returns all collections owned by user that contain the post
     return await this.collections.readMany({ owner: user, posts: post });
@@ -58,7 +66,7 @@ export default class CollectioningConcept {
     }
     collection.posts.push(post);
     await this.collections.partialUpdateOne({ _id }, collection);
-    return { msg: "Post successfully added to collection!" };
+    return { msg: "Post collections updated!" };
   }
 
   async removePost(_id: ObjectId, post: ObjectId) {
@@ -68,7 +76,7 @@ export default class CollectioningConcept {
     }
     collection.posts = collection.posts.filter((p) => p.toString() !== post.toString());
     await this.collections.partialUpdateOne({ _id }, collection);
-    return { msg: "Post successfully removed from collection!" };
+    return { msg: "Post collections updated!" };
   }
 
   async deleteCollection(_id: ObjectId) {

@@ -49,13 +49,17 @@ onMounted(async () => {
 <template>
   <div class="header">
     <p class="author">{{ props.post.author }}</p>
-    <SaveButtonComponent :postId="props.post._id" :userId="userId" />
+    <SaveButtonComponent :postId="props.post._id" />
   </div>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+      <li>
+        <button class="edit-button small-button" @click="emit('editPost', props.post._id)">Edit</button>
+      </li>
+      <li>
+        <button class="button-error small-button" @click="deletePost">Delete</button>
+      </li>
     </menu>
     <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
@@ -106,7 +110,31 @@ menu {
   align-items: center;
 }
 
-.base article:only-child {
-  margin-left: auto;
+.small-button {
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.edit-button {
+  background-color: #ff9800; /* Orange color for edit button */
+  color: white;
+  border: none;
+}
+
+.edit-button:hover {
+  background-color: #fb8c00; /* Darker orange on hover */
+}
+
+.button-error {
+  background-color: #f44336; /* Red color for delete button */
+  color: white;
+  border: none;
+}
+
+.button-error:hover {
+  background-color: #d32f2f; /* Darker red on hover */
 }
 </style>

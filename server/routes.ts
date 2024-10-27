@@ -125,6 +125,11 @@ class Routes {
     if (community) {
       await Communitying.removePost(community._id, oid);
     }
+    //remove post from all collections
+    const collections = await Collectioning.getCollectionsByPostAndUser(user, oid);
+    for (const c of collections) {
+      await Collectioning.removePost(c._id, oid);
+    }
     return Posting.delete(oid);
   }
 
@@ -252,14 +257,12 @@ class Routes {
   @Router.get("/communities/user/:id")
   async getCommunitiesByUser(id: string) {
     const communities = await Communitying.getCommunitiesByUser(new ObjectId(id));
-    console.log("GETTING DATA IN ROUTES", communities, id);
     return Responses.communities(communities);
   }
 
   @Router.get("/communities/search/:keyword")
   @Router.validate(z.object({ keyword: z.string() }))
   async searchCommunitiesByKeyword(keyword: string) {
-    console.log("sdkjlaldflksdjflkdjflkdjfdskfj ", keyword);
     return await Responses.communities(await Communitying.searchCommunitiesByKeyword(keyword));
   }
 
@@ -297,7 +300,6 @@ class Routes {
       throw new Error("Amount must be a number!");
     }
     const ddln = new Date(deadline);
-    console.log("creating user goal", user, name, unit, amt, ddln, deadline);
     return await UserGoaling.create(user, name, unit, amt, ddln);
   }
 
@@ -400,7 +402,6 @@ class Routes {
   @Router.get("/goals/complete/user")
   @Router.validate(z.object({ authorId: z.string().optional() }))
   async getCompleteUserGoals(authorId?: string) {
-    console.log("getting complete user goals", authorId);
     if (authorId) {
       await Authing.assertUserExists(new ObjectId(authorId));
       return await UserGoaling.getCompleteByAuthor(new ObjectId(authorId));
@@ -411,7 +412,6 @@ class Routes {
   @Router.get("/goals/incomplete/user")
   @Router.validate(z.object({ authorId: z.string().optional() }))
   async getIncompleteUserGoals(authorId?: string) {
-    console.log("getting incomplete user goals");
     if (authorId) {
       await Authing.assertUserExists(new ObjectId(authorId));
       return await UserGoaling.getIncompleteByAuthor(new ObjectId(authorId));
@@ -433,7 +433,6 @@ class Routes {
   @Router.get("/collections/user/:id")
   async getCollections(id: string) {
     let collections;
-    console.log("getting collections", id);
     if (id) {
       collections = await Collectioning.getCollectionsByUser(new ObjectId(id));
     } else {
@@ -443,12 +442,18 @@ class Routes {
   }
 
   @Router.get("/collections/user/:id/post/:postId")
-  async getCollectionsByPostAndUser(ownerId: string, postId: string) {
-    const collections = await Collectioning.getCollectionsByPostAndUser(new ObjectId(ownerId), new ObjectId(postId));
+  async getCollectionsByPostAndUser(id: string, postId: string) {
+    const collections = await Collectioning.getCollectionsByPostAndUser(new ObjectId(id), new ObjectId(postId));
     return collections;
   }
 
-  @Router.patch("/collections/addPost/:id")
+  @Router.get("/collections/:id/posts")
+  async getPostsInCollection(id: string) {
+    console.log("id", id);
+    return await Collectioning.getPostsInCollection(new ObjectId(id));
+  }
+
+  @Router.patch("/collections/:id/addPost/:postId")
   async addPostToCollection(session: SessionDoc, id: string, postId: string) {
     const user = Sessioning.getUser(session);
     await Posting.assertPostExists(new ObjectId(postId));
@@ -456,9 +461,10 @@ class Routes {
     return await Collectioning.addPost(new ObjectId(id), new ObjectId(postId));
   }
 
-  @Router.patch("/collections/removePost/:id")
+  @Router.patch("/collections/:id/removePost/:postId")
   async removePostFromCollection(session: SessionDoc, id: string, postId: string) {
     const user = Sessioning.getUser(session);
+    await Posting.assertPostExists(new ObjectId(postId));
     await Collectioning.assertUserCanEditCollection(new ObjectId(id), user);
     return await Collectioning.removePost(new ObjectId(id), new ObjectId(postId));
   }

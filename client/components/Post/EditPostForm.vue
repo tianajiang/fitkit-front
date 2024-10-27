@@ -21,11 +21,11 @@ const editPost = async (content: string) => {
 <template>
   <form @submit.prevent="editPost(content)">
     <p class="author">{{ props.post.author }}</p>
-    <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
+    <textarea id="content" v-model="content" placeholder="Edit your post!" required></textarea>
     <div class="base">
       <menu>
-        <li><button class="btn-small pure-button-primary pure-button" type="submit">Save</button></li>
-        <li><button class="btn-small pure-button" @click="emit('editPost')">Cancel</button></li>
+        <li><button class="btn-small create-button" type="submit">Save</button></li>
+        <li><button class="btn-small cancel-button" type="button" @click="emit('editPost')">Cancel</button></li>
       </menu>
       <p v-if="props.post.dateCreated !== props.post.dateUpdated" class="timestamp">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
       <p v-else class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</p>
@@ -78,5 +78,38 @@ menu {
   justify-content: flex-end;
   font-size: 0.9em;
   font-style: italic;
+}
+
+.create-button {
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.create-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.cancel-button {
+  background-color: transparent; /* Default button style */
+  color: #007bff; /* Blue text */
+  border: 1px solid #007bff; /* Blue border */
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.cancel-button:hover {
+  background-color: #cac9c9; /* Blue background on hover */
+  color: white; /* White text on hover */
 }
 </style>

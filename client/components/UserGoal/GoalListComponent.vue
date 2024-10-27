@@ -17,8 +17,6 @@ async function loadGoals() {
     const [incompleteResponse, completeResponse] = await Promise.all([fetchy("/api/goals/incomplete/user", "GET", { query }), fetchy("/api/goals/complete/user", "GET", { query })]);
     incompleteGoals.value = incompleteResponse;
     completeGoals.value = completeResponse;
-    console.log("incomplete", incompleteGoals.value);
-    console.log("complete", completeGoals.value);
   } catch (err) {
     console.error("Failed to load goals", err);
     error.value = "Failed to load goals.";

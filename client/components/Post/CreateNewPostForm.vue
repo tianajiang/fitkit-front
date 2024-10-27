@@ -19,7 +19,7 @@ const props = defineProps<{
 const loadCommunities = async () => {
   try {
     const result = await fetchy(`/api/communities/user/${userId.value}`, "GET");
-    console.log("Communities:", result);
+
     communities.value = result;
     if (communities.value.length > 0) {
       selectedCommunity.value = props.communityId || communities.value[0]._id;
@@ -80,7 +80,7 @@ onMounted(loadCommunities);
     <label for="library-toggle">Add to Global Exercise Library?</label>
     <input id="library-toggle" type="checkbox" v-model="addToLibrary" />
 
-    <button type="submit" class="pure-button-primary pure-button">Create Post</button>
+    <button type="submit" class="create-button small-button">Create Post</button>
   </form>
 </template>
 
@@ -100,7 +100,6 @@ textarea {
   height: 6em;
   padding: 0.5em;
   border-radius: 4px;
-  resize: none;
 }
 
 select {
@@ -112,5 +111,20 @@ select {
 input[type="checkbox"] {
   width: 1.2em;
   height: 1.2em;
+}
+
+.create-button {
+  background-color: #007bff; /* Blue color for the create button */
+  color: white;
+  border: none;
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.create-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
 </style>

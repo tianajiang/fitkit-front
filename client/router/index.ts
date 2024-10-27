@@ -126,6 +126,24 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/mycollections",
+      name: "MyCollections",
+      component: () => import("../views/MyCollectionsView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/collections/:id",
+      name: "Collection",
+      component: () => import("@/views/SingleCollectionView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/posts/:id",
+      name: "Post",
+      component: () => import("@/views/SinglePostView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/:catchAll(.*)",
       name: "not-found",
       component: NotFoundView,

@@ -26,7 +26,7 @@ const deleteComment = async () => {
     <div class="comment-actions">
       <menu v-if="props.comment.author === currentUsername">
         <li>
-          <button class="button-error btn-small pure-button" @click="deleteComment">Delete</button>
+          <button class="button-error btn-small pure-button small-button" @click="deleteComment">Delete</button>
         </li>
       </menu>
       <div class="timestamp">Posted on: {{ formatDate(props.comment.dateCreated) }}</div>
@@ -42,12 +42,12 @@ const deleteComment = async () => {
 
 .author {
   font-weight: bold;
-  font-size: 0.8em;
+  font-size: 0.9em;
   margin-bottom: 0.1em;
 }
 
 .commentContent {
-  font-size: 0.8em;
+  font-size: 0.9em;
   margin-bottom: 0.1em;
 }
 
@@ -60,18 +60,20 @@ menu {
   margin: 0;
 }
 
-/* .comment-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.small-button {
+  margin-top: 0.5em;
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
-.timestamp {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.65em;
-  font-style: italic;
-} */
+.button-error {
+  background-color: #f44336; /* Red color for delete button */
+  color: white;
+  border: none;
+}
 
 .comment-actions {
   display: flex;

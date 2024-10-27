@@ -21,13 +21,10 @@ const completeGoals = ref<Array<{ name: string; unit: string; amount: number; pr
 
 // Load community info and check membership status
 const loadCommunity = async () => {
-  console.log("Loading community", communityId);
   try {
     const data = await fetchy(`/api/communities/${communityId}`, "GET");
     community.value = data;
     isMember.value = await checkMembership();
-
-    console.log("Community data:", data);
 
     if (isMember.value) {
       await Promise.all([loadPosts(data.posts), loadMembers(data.members), loadGoals()]);

@@ -16,7 +16,6 @@ const emit = defineEmits(["selectCommunity"]);
 
 // Triggers the event to notify parent components that this card was clicked.
 async function handleClick() {
-  console.log("Clicked community card:", props.community);
   await router.push(`/communities/${props.community._id}`);
 }
 </script>

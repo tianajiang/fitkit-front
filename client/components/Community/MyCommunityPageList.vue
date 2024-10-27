@@ -26,11 +26,6 @@ async function loadCommunities() {
 // Fetch the communities on mount
 onMounted(loadCommunities);
 
-function handleCommunitySelect(communityId: string) {
-  console.log(`Selected community: ${communityId}`);
-  // You can perform additional actions, like navigation or modal display
-}
-
 async function goToFindCommunities() {
   await router.push("/communities/find");
 }
@@ -50,7 +45,7 @@ async function goToCreateCommunity() {
     <p v-else-if="error">{{ error }}</p>
     <div v-else class="community-grid">
       <div v-if="communities.length === 0">You have not joined any communities. Join communities to create posts and see what your peers are up to!</div>
-      <CommunityCardComponent v-for="community in communities" :key="community._id" :community="community" @selectCommunity="handleCommunitySelect" />
+      <CommunityCardComponent v-for="community in communities" :key="community._id" :community="community" />
     </div>
   </div>
 </template>

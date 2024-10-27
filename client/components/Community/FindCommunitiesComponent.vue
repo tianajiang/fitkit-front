@@ -21,9 +21,6 @@ const searchCommunities = async () => {
   try {
     if (searchKeyword.value) {
       const keyword = searchKeyword.value;
-      //   console.log("Searching for communities with keyword:", keyword);
-      //   let query: Record<string, string> = keyword !== undefined ? { keyword } : {};
-      //   const result = await fetchy("/api/communities/search", "GET", { query });
       const result = await fetchy(`/api/communities/search/${keyword}`, "GET");
       communities.value = result;
     } else {

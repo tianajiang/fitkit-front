@@ -42,10 +42,8 @@ const saveProgress = async () => {
     });
     //check if goal is now complete. if so, route to congratulations page.
     if (currentProgress.value + amount.value >= goalAmount.value) {
-      console.log("goal complete KSEJFKSDJFKJDHFKJDFHKJDFH");
       await router.push(`/goals/user/complete/${goalId}`);
     } else {
-      console.log("NSEODFJLDSKJFLKD");
       await router.push(`/goals/user/${goalId}`);
     }
   } catch (err) {

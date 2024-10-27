@@ -30,19 +30,6 @@ const submitComment = async () => {
   }
 };
 
-// const createPost = async (content: string) => {
-//   try {
-//     await fetchy("/api/posts", "POST", {
-//       body: { content },
-//     });
-//   } catch (_) {
-//     return;
-//   }
-//   emit("refreshPosts");
-//   emptyForm();
-// };
-
-// Function to clear the input
 const emptyForm = () => {
   newComment.value = "";
 };
@@ -52,7 +39,7 @@ const emptyForm = () => {
   <form @submit.prevent="submitComment">
     <label for="commentContent">Add a comment:</label>
     <textarea id="commentContent" v-model="newComment" placeholder="Add a comment..." required></textarea>
-    <button type="submit" class="pure-button-primary pure-button">Submit</button>
+    <button type="submit" class="pure-button-primary pure-button small-button">Submit</button>
   </form>
 </template>
 
@@ -78,5 +65,14 @@ textarea {
 
 button {
   align-self: flex-end; /* Align button to the right */
+}
+
+.small-button {
+  margin-top: 0.5em;
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9rem; /* Smaller font size */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 </style>
