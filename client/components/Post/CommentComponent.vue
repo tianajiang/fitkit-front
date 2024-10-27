@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { formatDate } from "@/utils/formatDate";
 import { fetchy } from "@/utils/fetchy";
+import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 // import { ref } from "vue";
 
@@ -26,7 +26,7 @@ const deleteComment = async () => {
     <div class="comment-actions">
       <menu v-if="props.comment.author === currentUsername">
         <li>
-          <button class="button-error btn-small pure-button small-button" @click="deleteComment">Delete</button>
+          <button class="button-error btn-small p-button small-button" @click="deleteComment">Delete</button>
         </li>
       </menu>
       <div class="timestamp">Posted on: {{ formatDate(props.comment.dateCreated) }}</div>
@@ -70,7 +70,7 @@ menu {
 }
 
 .button-error {
-  background-color: #f44336; /* Red color for delete button */
+  background-color: #f85d52; /* Red color for delete button */
   color: white;
   border: none;
 }

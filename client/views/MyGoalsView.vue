@@ -33,12 +33,12 @@ h1 {
   font-size: 16px;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   cursor: pointer;
 }
 
 .create-goal-button:hover {
-  background-color: #45a049;
+  background-color: #f0577b;
 }
 </style>

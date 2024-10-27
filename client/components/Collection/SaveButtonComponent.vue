@@ -149,7 +149,7 @@ onMounted(checkIfSaved);
 
 .cancel-button {
   margin-top: 8px;
-  background-color: #f44336; /* Red color for cancel button */
+  background-color: #f85d52; /* Red color for cancel button */
   color: white;
   border: none;
   border-radius: 4px;
@@ -158,7 +158,7 @@ onMounted(checkIfSaved);
 
 .save-selection-button {
   margin-top: 8px;
-  background-color: #4caf50; /* Green color for save button */
+  background-color: #fb7b90; /* Green color for save button */
   color: white;
   border: none;
   border-radius: 4px;

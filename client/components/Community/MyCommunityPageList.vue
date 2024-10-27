@@ -73,7 +73,7 @@ async function goToCreateCommunity() {
   margin-top: 2em;
   padding: 0.8em 1.5em;
   font-size: 1rem;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   border: none;
   border-radius: 4px;
@@ -82,6 +82,6 @@ async function goToCreateCommunity() {
 }
 
 .find-button:hover {
-  background-color: #45a049;
+  background-color: #f0577b;
 }
 </style>

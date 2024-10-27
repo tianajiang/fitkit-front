@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import GoalCardComponent from "@/components/CommunityGoal/GoalCardComponent.vue";
+import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
+import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import PostListComponent from "../Post/PostListComponent.vue";
-import { useUserStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
 
 const route = useRoute();
 const router = useRouter();
@@ -29,7 +29,6 @@ const loadCommunity = async () => {
     if (isMember.value) {
       await Promise.all([loadPosts(data.posts), loadMembers(data.members), loadGoals()]);
     }
-    console.log("Community loaded:", data);
   } catch (err) {
     console.error("Failed to load community:", err);
     alert("Could not load the community. Redirecting...");
@@ -54,7 +53,6 @@ const loadPosts = async (postIds: string[]) => {
 
 // Load member details by their IDs
 const loadMembers = async (memberIds: string[]) => {
-  console.log("Loading members:", memberIds);
   try {
     const promises = memberIds.map((id) => fetchy(`/api/users/username/${id}`, "GET"));
     members.value = await Promise.all(promises);
@@ -240,7 +238,7 @@ button {
   margin-top: 1em;
   padding: 0.5em 1em;
   font-size: 16px;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   border: none;
   border-radius: 4px;
@@ -248,7 +246,7 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #f0577b;
 }
 
 .goal-item {
@@ -265,7 +263,7 @@ button:hover {
 .membership-button {
   padding: 0.5em 1em;
   font-size: 16px;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   border: none;
   border-radius: 4px;

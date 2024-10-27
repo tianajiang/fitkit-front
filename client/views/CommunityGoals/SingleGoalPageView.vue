@@ -96,7 +96,7 @@ onMounted(loadGoalDetails);
 
 .progress-bar {
   height: 100%;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   transition: width 0.3s ease;
 }
 

@@ -104,7 +104,7 @@ input::placeholder {
 }
 
 .cancel-button {
-  background-color: #f44336;
+  background-color: #f85d52;
   color: white;
 }
 
@@ -113,7 +113,7 @@ input::placeholder {
 }
 
 .save-button {
-  background-color: #4caf50;
+  background-color: #2bd14c;
   color: white;
 }
 

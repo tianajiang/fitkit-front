@@ -117,7 +117,7 @@ textarea::placeholder {
 }
 
 .cancel-button {
-  background-color: #f44336;
+  background-color: #f85d52;
   color: white;
 }
 
@@ -126,7 +126,7 @@ textarea::placeholder {
 }
 
 .save-button {
-  background-color: #4caf50;
+  background-color: #2bd14c;
   color: white;
 }
 

@@ -60,7 +60,7 @@ onMounted(loadGoal);
 
 h1 {
   font-size: 2.5rem;
-  color: #4caf50;
+  color: #fb7b90;
   margin-bottom: 10px;
 }
 
@@ -78,13 +78,13 @@ p {
   padding: 10px 20px;
   font-size: 1rem;
   border: none;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .return-button:hover {
-  background-color: #45a049;
+  background-color: #f0577b;
 }
 </style>

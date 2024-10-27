@@ -67,12 +67,12 @@ onMounted(loadUserAndCollections);
   padding: 0.5em 1em;
   border: none;
   border-radius: 4px;
-  background-color: #007bff;
+  background-color: #7243ff;
   color: white;
   cursor: pointer;
 }
 
 .collection-card button:hover {
-  background-color: #0056b3;
+  background-color: #541fff;
 }
 </style>

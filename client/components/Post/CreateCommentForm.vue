@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { fetchy } from "../../utils/fetchy";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { ref } from "vue";
+import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["post", "onCommentAdded"]);
 const emit = defineEmits(["commentAdded"]);
@@ -39,7 +39,7 @@ const emptyForm = () => {
   <form @submit.prevent="submitComment">
     <label for="commentContent">Add a comment:</label>
     <textarea id="commentContent" v-model="newComment" placeholder="Add a comment..." required></textarea>
-    <button type="submit" class="pure-button-primary pure-button small-button">Submit</button>
+    <button type="submit" class="p-button-primary p-button small-button">Submit</button>
   </form>
 </template>
 

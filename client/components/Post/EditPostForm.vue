@@ -81,7 +81,7 @@ menu {
 }
 
 .create-button {
-  background-color: #007bff; /* Blue color */
+  background-color: #7243ff; /* Blue color */
   color: white;
   border: none;
   padding: 0.4em 1em; /* Smaller padding */
@@ -92,13 +92,13 @@ menu {
 }
 
 .create-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #541fff; /* Darker blue on hover */
 }
 
 .cancel-button {
   background-color: transparent; /* Default button style */
-  color: #007bff; /* Blue text */
-  border: 1px solid #007bff; /* Blue border */
+  color: #7243ff; /* Blue text */
+  border: 1px solid #7243ff; /* Blue border */
   padding: 0.4em 1em; /* Smaller padding */
   font-size: 0.9rem; /* Smaller font size */
   border-radius: 4px;

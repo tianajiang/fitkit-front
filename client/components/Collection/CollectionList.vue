@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import CollectionCardComponent from "@/components/Collection/CollectionCardComponent.vue";
 import { useUserStore } from "@/stores/user";
+import { fetchy } from "@/utils/fetchy"; // Adjust the path as necessary
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { fetchy } from "@/utils/fetchy"; // Adjust the path as necessary
 
 const { userId } = storeToRefs(useUserStore());
 const collections = ref<Array<{ _id: string; name: string }>>([]);
@@ -68,7 +68,7 @@ async function goToCreateCollection() {
   margin-top: 2em;
   padding: 0.8em 1.5em;
   font-size: 1rem;
-  background-color: #4caf50;
+  background-color: #fb7b90;
   color: white;
   border: none;
   border-radius: 4px;
@@ -77,6 +77,6 @@ async function goToCreateCollection() {
 }
 
 .find-button:hover {
-  background-color: #45a049;
+  background-color: #f0577b;
 }
 </style>

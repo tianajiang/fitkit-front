@@ -54,7 +54,7 @@ const saveProgress = async () => {
 
 // Cancel and navigate back to the goal view
 const cancel = async () => {
-  await router.push(`/goals/${goalId}`);
+  await router.push(`/goals/user/${goalId}`);
 };
 
 onMounted(loadGoal);
@@ -141,7 +141,7 @@ input::placeholder {
 }
 
 .cancel-button {
-  background-color: #f44336;
+  background-color: #f85d52;
   color: white;
 }
 
@@ -150,7 +150,7 @@ input::placeholder {
 }
 
 .save-button {
-  background-color: #4caf50;
+  background-color: #2bd14c;
   color: white;
 }
 

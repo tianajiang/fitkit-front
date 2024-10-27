@@ -5,13 +5,13 @@
   --base-bg: #f1f3f5;
 }
 
-button.btn-small {
-  font-size: 80%;
+html, body {
+  font-family: 'Libre Franklin', sans-serif;
+  font-weight: 300; /* Ensures the light weight (300) is used */
 }
 
-button.button-error {
-  color: white;
-  background: var(--red);
+button.btn-small {
+  font-size: 80%;
 }
 
 a.button {
@@ -29,4 +29,38 @@ a.button {
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+
+.button-error {
+  background-color: #f85d52; /* Red color for delete button */
+  color: white;
+  font-family: inherit;
+  font-size: 100%;
+  padding: 0.5em 1em;
+  border: none transparent;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.button-error:hover {
+  background-color: #f1382d;
+}
+
+.p-button{
+  color: white
+}
+
+.p-button-primary {
+  background-color: #7243ff;
+  color: white;
+  font-family: inherit;
+  font-size: 100%;
+  padding: 0.5em 1em;
+  border: none transparent;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.p-button-primary:hover {
+  background-color: #5c2eb8;
 }

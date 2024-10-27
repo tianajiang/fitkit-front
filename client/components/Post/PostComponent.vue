@@ -3,11 +3,11 @@ import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router"; // Import Vue Router
 import { fetchy } from "../../utils/fetchy";
 import SaveButtonComponent from "../Collection/SaveButtonComponent.vue";
 import CommentComponent from "./CommentComponent.vue";
 import CreateCommentForm from "./CreateCommentForm.vue";
-import { useRouter } from "vue-router"; // Import Vue Router
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
@@ -142,12 +142,12 @@ menu {
 }
 
 .button-error {
-  background-color: #f44336; /* Red color for delete button */
+  background-color: #f85d52; /* Red color for delete button */
   color: white;
   border: none;
 }
 
 .button-error:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+  background-color: #d32f2f;
 }
 </style>

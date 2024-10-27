@@ -114,7 +114,7 @@ input[type="checkbox"] {
 }
 
 .create-button {
-  background-color: #007bff; /* Blue color for the create button */
+  background-color: #7243ff; /* Blue color for the create button */
   color: white;
   border: none;
   padding: 0.4em 1em; /* Smaller padding */
@@ -125,6 +125,6 @@ input[type="checkbox"] {
 }
 
 .create-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #541fff; /* Darker blue on hover */
 }
 </style>
