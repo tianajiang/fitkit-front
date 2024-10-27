@@ -39,8 +39,9 @@ async function handleCommentAdded() {
   await getComments(props.post._id); // Refresh the comments
 }
 
-function handleCommentDeleted(commentId: string) {
+async function handleCommentDeleted(commentId: string) {
   comments.value = comments.value.filter((comment) => comment._id !== commentId); // Remove the deleted comment
+  await router.push("/");
 }
 
 onMounted(async () => {
