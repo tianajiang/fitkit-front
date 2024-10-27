@@ -93,6 +93,17 @@ class Routes {
     return await Responses.post(await Posting.getPost(new ObjectId(id)));
   }
 
+  @Router.get("/posts/user/")
+  async getPostsInCommunitiesOfUser(session: SessionDoc) {
+    const user = Sessioning.getUser(session);
+    const communities = await Communitying.getCommunitiesByUser(user);
+    const posts = [];
+    for (const c of communities) {
+      posts.push(await Communitying.getCommunityPosts(c._id));
+    }
+    return posts;
+  }
+
   @Router.post("/posts")
   async createPost(session: SessionDoc, content: string, communityId: string, addToLibrary: boolean, options?: PostOptions) {
     const user = Sessioning.getUser(session);

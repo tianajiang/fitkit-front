@@ -7,7 +7,7 @@ import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { isLoggedIn, userId } = storeToRefs(useUserStore());
 
 const props = defineProps<{
   communityId?: string;
@@ -23,12 +23,14 @@ async function getPosts() {
   if (!communityId) {
     try {
       postResults = await fetchy("/api/posts", "GET");
+      console.log("post res aklflkdsjf", postResults);
       posts.value = postResults;
     } catch (_) {
       return;
     }
   } else {
     try {
+      console.log("post res aklflkdsdfsdfdsfsjf", postResults);
       postResults = await fetchy(`/api/communities/posts/${communityId}`, "GET");
       //get all of the post objects given the array of post ids
       const promises = postResults.map((id: string) => fetchy(`/api/posts/${id}`, "GET"));

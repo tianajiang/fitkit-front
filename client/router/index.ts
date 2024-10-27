@@ -2,7 +2,7 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
-import CommunitiesView from "../views/CommunityView.vue";
+import CommunityView from "../views/CommunityView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import MyGoalsView from "../views/MyGoalsView.vue";
@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: "/communities",
       name: "Communities",
-      component: CommunitiesView,
+      component: CommunityView,
       meta: { requiresAuth: true },
     },
     {
