@@ -112,7 +112,7 @@ class Routes {
     if (created.post) {
       await Communitying.addPost(new ObjectId(communityId), created.post._id);
       if (addToLibrary) {
-        await Collectioning.addPost(new ObjectId("671ddc2969464518cbd0bd45"), created.post._id);
+        await Collectioning.addPost(new ObjectId("671e76ffed05bc24b857840f"), created.post._id);
       }
     }
     return { msg: created.msg, post: await Responses.post(created.post) };
@@ -439,8 +439,8 @@ class Routes {
   @Router.get("/GlobalExerciseLibrary/search/:keyword")
   @Router.validate(z.object({ keyword: z.string() }))
   async searchGlobalExerciseLibrary(keyword: string) {
-    //get the posts in the collection with id 671ddc2969464518cbd0bd45
-    const library = await Collectioning.getPostsInCollection(new ObjectId("671ddc2969464518cbd0bd45"));
+    //get the posts in the collection with id 671e76ffed05bc24b857840f
+    const library = await Collectioning.getPostsInCollection(new ObjectId("671e76ffed05bc24b857840f"));
     const posts = [];
     for (const p of library) {
       if (await Posting.searchPostForKeyword(keyword, p)) {

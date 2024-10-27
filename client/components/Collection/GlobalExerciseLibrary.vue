@@ -9,7 +9,7 @@ const posts = ref<Array<{ _id: string; author: string; content: string }>>([]); 
 // Load all posts from the collection
 const loadAllPosts = async () => {
   try {
-    const postResults = await fetchy("/api/collections/671ddc2969464518cbd0bd45/posts", "GET");
+    const postResults = await fetchy("/api/collections/671e76ffed05bc24b857840f/posts", "GET");
     const detailedPosts = await Promise.all(postResults.map((id: string) => fetchy(`/api/posts/${id}`, "GET")));
     posts.value = detailedPosts;
   } catch (err) {

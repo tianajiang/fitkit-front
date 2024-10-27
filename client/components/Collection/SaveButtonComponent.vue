@@ -158,10 +158,18 @@ onMounted(checkIfSaved);
 
 .save-selection-button {
   margin-top: 8px;
-  background-color: #fb7b90; /* Green color for save button */
+  background-color: #2bd14c; /* Green color for save button */
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
+}
+
+.save-selection-button:hover {
+  background-color: #45a049;
 }
 </style>

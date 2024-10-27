@@ -121,7 +121,6 @@ onMounted(loadCommunity);
         <div class="post-list">
           <PostListComponent :communityId="communityId" />
         </div>
-        <p v-if="!posts.length">No posts yet!</p>
       </div>
 
       <div class="sidebar">
