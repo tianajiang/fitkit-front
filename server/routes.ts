@@ -141,6 +141,7 @@ class Routes {
     for (const c of collections) {
       await Collectioning.removePost(c._id, oid);
     }
+    await Collectioning.removePost(new ObjectId("671e76ffed05bc24b857840f"), oid);
     return Posting.delete(oid);
   }
 
