@@ -100,10 +100,10 @@ class Routes {
     const created = await Posting.create(user, content, options);
     if (created.post) {
       await Communitying.addPost(new ObjectId(communityId), created.post._id);
+      if (addToLibrary) {
+        await Collectioning.addPost(new ObjectId("671ddc2969464518cbd0bd45"), created.post._id);
+      }
     }
-    // if (addToLibrary) {
-    //   await Collectioning.addPostToGlobalLibrary(created.post._id);
-    // }
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
 
@@ -425,9 +425,18 @@ class Routes {
     return await Collectioning.create(name, user);
   }
 
-  @Router.post("/collections/globalLibrary")
-  async createGlobalLibraryCollection() {
-    return await Collectioning.create("Global Exercise Library", null);
+  @Router.get("/GlobalExerciseLibrary/search/:keyword")
+  @Router.validate(z.object({ keyword: z.string() }))
+  async searchGlobalExerciseLibrary(keyword: string) {
+    //get the posts in the collection with id 671ddc2969464518cbd0bd45
+    const library = await Collectioning.getPostsInCollection(new ObjectId("671ddc2969464518cbd0bd45"));
+    const posts = [];
+    for (const p of library) {
+      if (await Posting.searchPostForKeyword(keyword, p)) {
+        posts.push(p);
+      }
+    }
+    return posts;
   }
 
   @Router.get("/collections/user/:id")

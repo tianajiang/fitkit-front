@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import CollectionList from "@/components/Collection/CollectionList.vue";
+import CreateCollectionForm from "@/components/Collection/CreateCollectionForm.vue";
 </script>
 
 <template>
   <main>
-    <h1>My Collections</h1>
-    <CollectionList />
+    <CreateCollectionForm />
   </main>
 </template>
 

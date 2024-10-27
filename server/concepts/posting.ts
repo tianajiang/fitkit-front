@@ -47,6 +47,15 @@ export default class PostingConcept {
     return post;
   }
 
+  async searchPostForKeyword(keyword: string, postId: ObjectId) {
+    //return true if keyword is found in the post
+    const post = await this.posts.readOne({ _id: postId });
+    if (!post) {
+      throw new NotFoundError(`Post ${postId} does not exist!`);
+    }
+    return post.content.includes(keyword);
+  }
+
   async getByAuthor(author: ObjectId) {
     return await this.posts.readMany({ author });
   }

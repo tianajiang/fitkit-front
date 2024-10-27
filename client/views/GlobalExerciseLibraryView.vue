@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import CollectionList from "@/components/Collection/CollectionList.vue";
+import GlobalExerciseLibrary from "@/components/Collection/GlobalExerciseLibrary.vue";
 </script>
 
 <template>
   <main>
-    <h1>My Collections</h1>
-    <CollectionList />
+    <GlobalExerciseLibrary />
   </main>
 </template>
 
