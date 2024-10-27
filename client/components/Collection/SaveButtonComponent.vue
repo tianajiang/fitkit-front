@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { fetchy } from "@/utils/fetchy"; // Ensure you have a utility to handle API requests
+import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
-import bookmark from "@/assets/images/bookmark.png";
-import bookmarkFilled from "@/assets/images/bookmarkFilled.png";
 
 const props = defineProps<{
   postId: string;
@@ -15,7 +13,7 @@ const { userId } = storeToRefs(useUserStore());
 const isSaved = ref(false);
 const isModalOpen = ref(false);
 const collections = ref<any[]>([]);
-const selectedCollections = ref<string[]>([]); // Store the selected collection IDs
+const selectedCollections = ref<string[]>([]);
 
 // Check if the post is saved in any collection
 const checkIfSaved = async () => {
@@ -60,7 +58,7 @@ const toggleCollection = (collectionId: string) => {
 // Save the post to the selected collections
 const savePostToCollections = async () => {
   try {
-    // remove post from all collections not in selectedCollections
+    // Remove post from all collections not in selectedCollections
     const collectionsToRemove = collections.value.filter((collection) => !selectedCollections.value.includes(collection._id));
     await Promise.all(collectionsToRemove.map((collection) => fetchy(`/api/collections/${collection._id}/removePost/${props.postId}`, "PATCH")));
     await Promise.all(selectedCollections.value.map((collectionId) => fetchy(`/api/collections/${collectionId}/addPost/${props.postId}`, "PATCH")));
@@ -82,7 +80,9 @@ onMounted(checkIfSaved);
 <template>
   <div>
     <button @click="toggleModal" class="save-button">
-      <img :src="isSaved ? bookmarkFilled : bookmark" alt="Save Post" />
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" :class="{ saved: isSaved }">
+        <path d="M17 3H7C5.9 3 5 3.9 5 5v14l7-3 7 3V5c0-1.1-.9-2-2-2zm-2 12h-4v-2h4v2z" :fill="isSaved ? 'black' : 'white'" stroke="black" stroke-width="2" />
+      </svg>
     </button>
     <div v-if="isModalOpen" class="modal">
       <h4>Select Collections</h4>
@@ -118,9 +118,10 @@ onMounted(checkIfSaved);
   justify-content: space-between;
 }
 
-.save-button img {
-  width: 24px; /* Adjust size as needed */
-  height: 24px; /* Adjust size as needed */
+.save-button svg {
+  width: 40px; /* Increased size */
+  height: 40px; /* Increased size */
+  transition: fill 0.3s; /* Smooth color transition */
 }
 
 .modal {
@@ -157,7 +158,7 @@ onMounted(checkIfSaved);
 
 .save-selection-button {
   margin-top: 8px;
-  background-color: #4caf50; /* Red color for cancel button */
+  background-color: #4caf50; /* Green color for save button */
   color: white;
   border: none;
   border-radius: 4px;
