@@ -19,7 +19,7 @@ async function handleClick() {
 }
 </script>
 
-<template>
+<template class="center">
   <div class="collection-card" @click="handleClick">
     <h3 class="collection-name">{{ props.collection.name }}</h3>
   </div>

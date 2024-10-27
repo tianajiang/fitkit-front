@@ -7,11 +7,13 @@ import { fetchy } from "../../utils/fetchy";
 import SaveButtonComponent from "../Collection/SaveButtonComponent.vue";
 import CommentComponent from "./CommentComponent.vue";
 import CreateCommentForm from "./CreateCommentForm.vue";
+import { useRouter } from "vue-router"; // Import Vue Router
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername, userId } = storeToRefs(useUserStore());
 const comments = ref<Array<Record<string, string>>>([]);
+const router = useRouter(); // Initialize router
 
 async function getComments(targetId?: string) {
   let commentResults;
@@ -44,11 +46,17 @@ function handleCommentDeleted(commentId: string) {
 onMounted(async () => {
   await getComments(props.post._id);
 });
+
+// Function to navigate to the author's profile
+const navigateToAuthorProfile = async () => {
+  const authorId = await fetchy(`/api/users/username/${props.post.author}`, "GET"); // Fetch the author's ID
+  await router.push(`/profile/${authorId._id}`); // Assuming authorId is available in the post object
+};
 </script>
 
 <template>
   <div class="header">
-    <p class="author">{{ props.post.author }}</p>
+    <p class="author" @click="navigateToAuthorProfile">{{ props.post.author }}</p>
     <SaveButtonComponent :postId="props.post._id" />
   </div>
   <p>{{ props.post.content }}</p>
@@ -80,6 +88,11 @@ p {
 .author {
   font-weight: bold;
   font-size: 1.2em;
+  cursor: pointer; /* Change cursor to pointer for clickability */
+}
+
+.author:hover {
+  text-decoration: underline; /* Optional: underline on hover to indicate it's clickable */
 }
 
 menu {

@@ -31,9 +31,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="collection-page">
+  <div class="collection-page center">
     <h1>Posts in Collection</h1>
-    <div class="posts">
+    <div class="posts center-items">
       <SmallPostComponent v-for="post in posts" :key="post._id" :post="post" />
       <p v-if="posts.length === 0">No posts available in this collection.</p>
     </div>
@@ -41,8 +41,17 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.center {
+  text-align: center;
+}
 .collection-page {
   padding: 1em;
+}
+
+.center-items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .posts {

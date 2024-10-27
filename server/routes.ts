@@ -26,7 +26,7 @@ class Routes {
     return await Authing.getUsers();
   }
 
-  @Router.get("/users/:username")
+  @Router.get("/users/username/:username")
   @Router.validate(z.object({ username: z.string().min(1) }))
   async getUser(username: string) {
     return await Authing.getUserByUsername(username);

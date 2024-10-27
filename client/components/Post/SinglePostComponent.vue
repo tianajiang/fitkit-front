@@ -36,7 +36,7 @@ onBeforeMount(async () => {
 
 <template>
   <section v-if="isLoggedIn">
-    <h2>Post Details</h2>
+    <h2 class="center">Post Details</h2>
     <div class="post-container" v-if="loaded && post">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPost" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPost" @editPost="updateEditing" />
@@ -53,6 +53,10 @@ section {
   gap: 1em;
   margin: 0 auto;
   max-width: 60em;
+}
+
+.center {
+  text-align: center;
 }
 
 .post-container {

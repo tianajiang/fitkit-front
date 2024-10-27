@@ -36,6 +36,12 @@ const router = createRouter({
       },
     },
     {
+      path: "/profile/:id",
+      name: "Profile",
+      component: () => import("@/views/ProfileView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/communities",
       name: "Communities",
       component: CommunityView,

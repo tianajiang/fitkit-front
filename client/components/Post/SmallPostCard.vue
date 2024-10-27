@@ -28,6 +28,7 @@ const navigateToPost = async () => {
   margin-bottom: 1em;
   cursor: pointer; /* Change cursor to pointer to indicate clickable item */
   transition: transform 0.2s;
+  width: 800px;
 }
 
 .post:hover {
